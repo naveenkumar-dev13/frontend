@@ -5,15 +5,11 @@ import { motion } from "framer-motion";
 
 import Inputs from "../components/Inputs";
 import { login } from "../data";
-import { useDispatch } from "react-redux";
-import { updateEmail, updateName } from "../feature/UserSlice";
-//  import {login} from '../feature/UserSlice'
 
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
 
   // login function
   const handleLogin = async (e) => {
@@ -36,8 +32,7 @@ function Login() {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        dispatch(updateEmail(data.email)); // ✅ Only update Redux after login success
-        // If backend sends name: dispatch(updateName(data.name));
+
         navigate("/");
       } else {
         console.error(data.error);

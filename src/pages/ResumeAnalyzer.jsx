@@ -4,6 +4,7 @@ import { ResumeAnalyzer as resumeImage } from "../data";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCloudArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 
 function ResumeAnalyzer() {
   const [file, setFile] = useState(null);
@@ -65,7 +66,15 @@ function ResumeAnalyzer() {
     const selectedFile = event.target.files[0];
     if (selectedFile) {
       const fileExtension = selectedFile.name.split(".").pop().toLowerCase();
-      const allowedExtensions = ["pdf", "doc", "docx"];
+      const allowedExtensions = [
+        "pdf",
+        "doc",
+        "docx",
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+      ];
 
       if (allowedExtensions.includes(fileExtension)) {
         setFile(selectedFile);
@@ -77,8 +86,9 @@ function ResumeAnalyzer() {
     }
   };
 
+  if (loading) return <Loading />;
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen overflow-hidden ">
       <NavBar />
       <div className="flex items-center justify-center p-4 h-[calc(100vh-75px)] max-sm:p-2">
         <div
@@ -132,7 +142,7 @@ function ResumeAnalyzer() {
                   type="file"
                   id="resume-upload"
                   className="hidden"
-                  accept=".pdf,.doc,.docx"
+                  accept=".pdf,.doc,.docx,image/*"
                   onChange={handleFileChange}
                   disabled={loading}
                 />

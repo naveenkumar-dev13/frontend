@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faBars } from "@fortawesome/free-solid-svg-icons";
 import ShowPasswordPopup from "../components/ShowPasswordPopup";
-import { avatar, nonProfile } from "../data";
+import { nonProfile } from "../data";
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Loading from "../components/Loading";
@@ -15,7 +15,7 @@ function AccountInfoPage() {
   const [info, setInfo] = useState({});
   const [editingField, setEditingField] = useState(null);
   const [tempValue, setTempValue] = useState("");
-  const [userAvatar, setUserAvatar] = useState(avatar);
+  const [userAvatar, setUserAvatar] = useState(nonProfile);
   const [activeButton, setActiveButton] = useState("basicinfo");
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -169,7 +169,6 @@ function AccountInfoPage() {
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
-       
       } else {
         console.error("Password update failed:", data);
         alert(data.error || "Failed to update password");

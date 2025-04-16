@@ -242,7 +242,7 @@ const BasicInfo = () => {
 
             <form onSubmit={handleSave}>
               {Object.keys(user)
-                .filter((key) => !["profilePicture"].includes(key))
+                .filter((key) => !["profilePicture", "email", "phoneNumber"].includes(key))
                 .map((key) => (
                   <div
                     key={key}
@@ -326,23 +326,21 @@ const BasicInfo = () => {
                       </p>
                     )}
 
-                    {key !== "username" &&
-                      key !== "email" &&
-                      key !== "phoneNumber" && (
-                        <div className="max-sm:hidden">
-                          <button
-                            type="button"
-                            onClick={() =>
-                              editingField === key
-                                ? handleSave()
-                                : handleEdit(key)
-                            }
-                            className="text-blue-500 hover:underline"
-                          >
-                            {editingField === key ? "" : "Edit"}
-                          </button>
-                        </div>
-                      )}
+                    {key !== "username" && (
+                      <div className="max-sm:hidden">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            editingField === key
+                              ? handleSave()
+                              : handleEdit(key)
+                          }
+                          className="text-blue-500 hover:underline"
+                        >
+                          {editingField === key ? "" : "Edit"}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
             </form>
