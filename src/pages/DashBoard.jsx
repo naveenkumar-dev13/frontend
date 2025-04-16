@@ -230,11 +230,11 @@ const Dashboard = () => {
                   <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
                     <div
                       className="bg-blue-500 h-2.5 rounded-full"
-                      style={{ width: `${item.resumeAnalysisScore || 0}%` }}
+                      style={{ width: `${item.resumeAnalysisScore * 1}%` }}
                     ></div>
                   </div>
                   <p className="mt-1 text-sm text-gray-600">
-                    {item.resumeAnalysisScore || 0}%
+                    {Math.round(item.resumeAnalysisScore)}%
                   </p>
                   <p className="mt-3 font-medium">
                     Interview Score: {item.correctAnswers || 0}/15

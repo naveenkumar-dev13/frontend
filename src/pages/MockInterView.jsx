@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import Button from "../components/Button";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -20,52 +20,45 @@ const MockInterview = () => {
   const [skippedCount, setSkippedCount] = useState(0);
   const [evaluationResults, setEvaluationResults] = useState(null);
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      if (!resumeText || !jobRole || !difficulty) {
-        navigate("/");
+  const fetchQuestions = async () => {
+    if (!resumeText || !jobRole || !difficulty) {
+      navigate("/");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
         return;
       }
 
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
+      const response = await fetch(
+        "https://airesumeproapi.onrender.com/api/mockinterview",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ resumeText, jobRole, difficulty }),
         }
+      );
 
-        const response = await fetch(
-          "https://airesumeproapi.onrender.com/api/mockinterview",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ resumeText, jobRole, difficulty }),
-          }
-        );
-
-        const result = await response.json();
-        if (!response.ok) {
-          throw new Error(
-            result.error || "Failed to fetch interview questions"
-          );
-        }
-
-        setQuestions(result.questions || []);
-        setExpectedAnswers(result.expectedAnswers || []);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to fetch interview questions");
       }
-    };
+      setQuestions(result.questions || []);
+      setExpectedAnswers(result.expectedAnswers || []);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
-    fetchQuestions();
-  }, [resumeText, jobRole, difficulty, navigate]);
-
-  const evaluateAnswers = React.useCallback(async () => {
+  const evaluateAnswers = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -114,16 +107,16 @@ const MockInterview = () => {
       setError(err.message);
       setLoading(false);
     }
-  }, [answers, expectedAnswers, jobRole, navigate, questions, skippedCount]);
+  };
 
-  useEffect(() => {
+  const handleTimer = () => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0 && questions.length > 0) {
       evaluateAnswers();
     }
-  }, [timeLeft, evaluateAnswers, questions.length]);
+  };
 
   const handleAnswerChange = (e) => {
     setAnswers({ ...answers, [currentQuestionIndex]: e.target.value });
@@ -158,6 +151,7 @@ const MockInterview = () => {
   };
 
   if (loading && questions.length === 0) {
+    fetchQuestions();
     return (
       <div className="flex h-screen items-center justify-center overflow-hidden">
         <div>
@@ -193,7 +187,7 @@ const MockInterview = () => {
     return (
       <div className="h-screen ">
         <NavBar />
-        <div className="p-6 max-w-6xl mx-auto h-[calc(100vh-75px)] overflow-hidden  ">
+        <div className="p-6 max-w-6xl mx-auto h-[calc(100vh-75px)]   ">
           <div className="shadow-md p-4 my-8 rounded-md ">
             <div className="flex  items-center justify-between mb-6">
               <h1 className="text-3xl font-bold text-center max-md:text-xl ">
@@ -301,7 +295,7 @@ const MockInterview = () => {
             })}
           </div>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="py-4  flex justify-center gap-4">
             <Button
               className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 max-md:text-sm"
               onClick={() => navigate("/dashboard")}
@@ -319,6 +313,8 @@ const MockInterview = () => {
       </div>
     );
   }
+
+  handleTimer();
 
   return (
     <>
@@ -351,10 +347,10 @@ const MockInterview = () => {
         {questions.length > 0 && (
           <div>
             <div
-              className="my-4 shadow-md p-4 rounded-xl h-24 flex items-center"
+              className="my-4 shadow-md p-4 rounded-xl h-24 max-md:h-auto flex items-center"
               style={{ boxShadow: "0px 0px 10px 0px rgb(186, 213, 238)" }}
             >
-              <p className="font-normal text-xl">
+              <p className="font-normal text-xl ">
                 {questions[currentQuestionIndex]}
               </p>
             </div>
